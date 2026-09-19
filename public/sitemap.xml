@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://scaleox.in/</loc>
-  </url>
+  <url><loc>https://scaleox.in/</loc></url>
+  <url><loc>https://scaleox.in/about</loc></url>
+  <url><loc>https://scaleox.in/founder</loc></url>
+  <url><loc>https://scaleox.in/services</loc></url>
+  <url><loc>https://scaleox.in/pricing</loc></url>
+  <url><loc>https://scaleox.in/contact</loc></url>
+  <url><loc>https://scaleox.in/process</loc></url>
+  <url><loc>https://scaleox.in/system</loc></url>
+  <url><loc>https://scaleox.in/who-its-for</loc></url>
+  <url><loc>https://scaleox.in/results</loc></url>
+  <url><loc>https://scaleox.in/masterclass</loc></url>
+  <url><loc>https://scaleox.in/strategy-call</loc></url>
+  <url><loc>https://scaleox.in/privacy-policy</loc></url>
+  <url><loc>https://scaleox.in/terms-conditions</loc></url>
+  <url><loc>https://scaleox.in/refund-policy</loc></url>
+  <url><loc>https://scaleox.in/cookie-policy</loc></url>
+  <url><loc>https://scaleox.in/services/computer-training-institutes</loc></url>
+  <url><loc>https://scaleox.in/services/it-and-software-training-institutes</loc></url>
+  <url><loc>https://scaleox.in/services/digital-skills-institutes</loc></url>
+  <url><loc>https://scaleox.in/services/accounting-and-tally-institutes</loc></url>
+  <url><loc>https://scaleox.in/services/cad-and-design-institutes</loc></url>
+  <url><loc>https://scaleox.in/services/vocational-and-professional-training</loc></url>
 </urlset>

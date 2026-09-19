@@ -7,6 +7,7 @@ export type ActiveView =
   | 'results' 
   | 'resources' 
   | 'about' 
+  | 'founder' 
   | 'contact' 
   | 'masterclass' 
   | 'strategy-call'

@@ -19,13 +19,54 @@ import { StrategyCallModal } from './components/StrategyCallModal';
 import { MasterclassModal } from './components/MasterclassModal';
 import { BRAND_CONFIG } from './data/content';
 import { ArrowUp } from 'lucide-react';
+import { applyRouteMeta, FounderSEOPage, ServicesSEOPage, ServiceDetailPage, PricingSEOPage, ContactSEOPage, categoryForSlug } from './components/SeoPage';
 
 export default function App() {
-  const [activeView, setActiveView] = useState<ActiveView>('home');
+  const viewFromPath = (path: string): ActiveView => {
+    if (path === '/about') return 'about';
+    if (path === '/founder') return 'founder';
+    if (path === '/contact') return 'contact';
+    if (path === '/pricing') return 'plans';
+    if (path === '/services') return 'home';
+    if (path === '/process') return 'process';
+    if (path === '/system') return 'system';
+    if (path === '/who-its-for') return 'who-its-for';
+    if (path === '/results') return 'results';
+    if (path === '/masterclass') return 'masterclass';
+    if (path === '/strategy-call') return 'strategy-call';
+    if (path === '/privacy-policy') return 'privacy-policy';
+    if (path === '/terms-conditions') return 'terms-conditions';
+    if (path === '/refund-policy') return 'refund-policy';
+    if (path === '/cookie-policy') return 'cookie-policy';
+    return 'home';
+  };
+  const [activeView, setActiveView] = useState<ActiveView>(() => viewFromPath(window.location.pathname));
   const [strategyModalOpen, setStrategyModalOpen] = useState<boolean>(false);
   const [masterclassModalOpen, setMasterclassModalOpen] = useState<boolean>(false);
   const [selectedPlanForAction, setSelectedPlanForAction] = useState<PlanTier | null>(null);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
+
+  const navigateToView = (view: ActiveView) => {
+    const pathMap: Record<ActiveView, string> = {
+      home: '/', process: '/process', system: '/system', 'who-its-for': '/who-its-for', plans: '/pricing', results: '/results', resources: '/resources', about: '/about', founder: '/founder', contact: '/contact', masterclass: '/masterclass', 'strategy-call': '/strategy-call', 'privacy-policy': '/privacy-policy', 'terms-conditions': '/terms-conditions', 'refund-policy': '/refund-policy', 'cookie-policy': '/cookie-policy'
+    };
+    const path = pathMap[view] || '/';
+    if (window.location.pathname !== path) window.history.pushState({}, '', path);
+    setActiveView(view);
+    applyRouteMeta(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      const path = window.location.pathname;
+      setActiveView(viewFromPath(path));
+      applyRouteMeta(path);
+    };
+    window.addEventListener('popstate', onPopState);
+    applyRouteMeta(window.location.pathname);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const handleOpenStrategyCall = () => {
     window.open(BRAND_CONFIG.strategyCallUrl, '_blank', 'noopener,noreferrer');
@@ -63,14 +104,44 @@ export default function App() {
       {/* Header */}
       <Header
         activeView={activeView}
-        setActiveView={setActiveView}
+        setActiveView={navigateToView}
         onOpenStrategyCall={handleOpenStrategyCall}
         onOpenMasterclass={() => setMasterclassModalOpen(true)}
       />
 
       {/* Main Content Area */}
       <main className="grow">
-        {activeView === 'home' && (
+        {window.location.pathname === '/founder' && (
+          <FounderSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
+        )}
+
+        {window.location.pathname === '/services' && (
+          <ServicesSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
+        )}
+
+        {window.location.pathname.startsWith('/services/') && categoryForSlug(window.location.pathname.split('/').filter(Boolean)[1] || '') && (
+          <ServiceDetailPage
+            onOpenStrategyCall={handleOpenStrategyCall}
+            category={categoryForSlug(window.location.pathname.split('/').filter(Boolean)[1] || '')!}
+          />
+        )}
+
+        {window.location.pathname === '/pricing' && (
+          <PricingSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
+        )}
+
+        {window.location.pathname === '/contact' && (
+          <ContactSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
+        )}
+
+        {window.location.pathname === '/about' && (
+          <AboutPage
+            onOpenStrategyCall={handleOpenStrategyCall}
+            onOpenMasterclass={() => setMasterclassModalOpen(true)}
+          />
+        )}
+
+        {window.location.pathname === '/' && (
           <>
             <HeroSection
               onOpenStrategyCall={handleOpenStrategyCall}
@@ -126,7 +197,7 @@ export default function App() {
           </div>
         )}
 
-        {activeView === 'plans' && (
+        {window.location.pathname !== '/pricing' && activeView === 'plans' && (
           <div className="space-y-12">
             <PlansSection
               onSelectPlan={handleSelectPlan}
@@ -154,14 +225,14 @@ export default function App() {
           </div>
         )}
 
-        {activeView === 'about' && (
+        {window.location.pathname !== '/about' && activeView === 'about' && (
           <AboutPage
             onOpenStrategyCall={handleOpenStrategyCall}
             onOpenMasterclass={() => setMasterclassModalOpen(true)}
           />
         )}
 
-        {activeView === 'contact' && (
+        {window.location.pathname !== '/contact' && activeView === 'contact' && (
           <ContactPage onOpenStrategyCall={handleOpenStrategyCall} />
         )}
 
@@ -231,7 +302,7 @@ export default function App() {
 
       {/* Footer */}
       <Footer
-        setActiveView={setActiveView}
+        setActiveView={navigateToView}
         onOpenStrategyCall={handleOpenStrategyCall}
         onOpenMasterclass={() => setMasterclassModalOpen(true)}
       />

@@ -17,16 +17,20 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks: { label: string; view: ActiveView; id: string }[] = [
-    { label: 'Home', view: 'home', id: 'nav-home' },
-    { label: 'Our Process', view: 'process', id: 'nav-process' },
-    { label: 'Plans', view: 'plans', id: 'nav-plans' },
-    { label: 'Results', view: 'results', id: 'nav-results' },
-    { label: 'About', view: 'about', id: 'nav-about' },
-    { label: 'Contact', view: 'contact', id: 'nav-contact' },
+  const navLinks: { label: string; view: ActiveView; id: string; path: string }[] = [
+    { label: 'Home', view: 'home', id: 'nav-home', path: '/' },
+    { label: 'Our Process', view: 'process', id: 'nav-process', path: '/process' },
+    { label: 'Services', view: 'home', id: 'nav-services', path: '/services' },
+    { label: 'Plans', view: 'plans', id: 'nav-plans', path: '/pricing' },
+    { label: 'Results', view: 'results', id: 'nav-results', path: '/results' },
+    { label: 'About', view: 'about', id: 'nav-about', path: '/about' },
+    { label: 'Founder', view: 'founder', id: 'nav-founder', path: '/founder' },
+    { label: 'Contact', view: 'contact', id: 'nav-contact', path: '/contact' },
   ];
 
-  const handleNavClick = (view: ActiveView) => {
+  const handleNavClick = (view: ActiveView, path?: string) => {
+    const target = path || ({ home: '/', plans: '/pricing', about: '/about', contact: '/contact', founder: '/founder', process: '/process', results: '/results' } as Record<string,string>)[view] || '/';
+    if (window.location.pathname !== target) window.history.pushState({}, '', target);
     setActiveView(view);
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -44,9 +48,10 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo */}
-          <div
+          <a
             id="brand-logo-btn"
-            onClick={() => handleNavClick('home')}
+            href="/"
+            onClick={(e) => { e.preventDefault(); handleNavClick('home', '/'); }}
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -68,17 +73,18 @@ export const Header: React.FC<HeaderProps> = ({
                 Education Business Expansion
               </div>
             </div>
-          </div>
+          </a>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navLinks.map((item) => {
-              const isActive = activeView === item.view;
+              const isActive = item.path ? window.location.pathname === item.path : activeView === item.view;
               return (
-                <button
+                <a
                   key={item.id}
                   id={item.id}
-                  onClick={() => handleNavClick(item.view)}
+                  href={item.path}
+                  onClick={(e) => { e.preventDefault(); handleNavClick(item.view, item.path); }}
                   className={`px-3.5 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${
                     isActive
                       ? 'text-[#182A55] bg-[#E2E0D8]/60 font-bold'
@@ -86,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }`}
                 >
                   {item.label}
-                </button>
+                </a>
               );
             })}
           </nav>
@@ -130,19 +136,20 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="lg:hidden bg-[#FFFFFF] border-b border-[#E2E0D8] px-4 pt-3 pb-6 space-y-3 shadow-lg animate-fade-in">
           <div className="space-y-1">
             {navLinks.map((item) => {
-              const isActive = activeView === item.view;
+              const isActive = item.path ? window.location.pathname === item.path : activeView === item.view;
               return (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => handleNavClick(item.view)}
-                  className={`w-full text-left px-4 py-3 text-sm font-semibold rounded-xl transition-all cursor-pointer ${
+                  href={item.path}
+                  onClick={(e) => { e.preventDefault(); handleNavClick(item.view, item.path); }}
+                  className={`block w-full text-left px-4 py-3 text-sm font-semibold rounded-xl transition-all cursor-pointer ${
                     isActive
                       ? 'text-[#182A55] bg-[#FAF8F3] font-bold border-l-4 border-[#147D68]'
                       : 'text-[#5F6B72] hover:text-[#182A55] hover:bg-[#FAF8F3]'
                   }`}
                 >
                   {item.label}
-                </button>
+                </a>
               );
             })}
           </div>
