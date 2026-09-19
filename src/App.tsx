@@ -21,8 +21,14 @@ import { BRAND_CONFIG } from './data/content';
 import { ArrowUp } from 'lucide-react';
 import { applyRouteMeta, FounderSEOPage, ServicesSEOPage, ServiceDetailPage, PricingSEOPage, ContactSEOPage, categoryForSlug } from './components/SeoPage';
 
+const normalizePath = (path: string): string => {
+  const normalized = path.replace(/\/+$/, '');
+  return normalized || '/';
+};
+
 export default function App() {
   const viewFromPath = (path: string): ActiveView => {
+    path = normalizePath(path);
     if (path === '/about') return 'about';
     if (path === '/founder') return 'founder';
     if (path === '/contact') return 'contact';
@@ -40,6 +46,7 @@ export default function App() {
     if (path === '/cookie-policy') return 'cookie-policy';
     return 'home';
   };
+  const currentPath = normalizePath(window.location.pathname);
   const [activeView, setActiveView] = useState<ActiveView>(() => viewFromPath(window.location.pathname));
   const [strategyModalOpen, setStrategyModalOpen] = useState<boolean>(false);
   const [masterclassModalOpen, setMasterclassModalOpen] = useState<boolean>(false);
@@ -59,12 +66,12 @@ export default function App() {
 
   useEffect(() => {
     const onPopState = () => {
-      const path = window.location.pathname;
+      const path = normalizePath(window.location.pathname);
       setActiveView(viewFromPath(path));
       applyRouteMeta(path);
     };
     window.addEventListener('popstate', onPopState);
-    applyRouteMeta(window.location.pathname);
+    applyRouteMeta(normalizePath(window.location.pathname));
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
@@ -111,37 +118,37 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="grow">
-        {window.location.pathname === '/founder' && (
+        {currentPath === '/founder' && (
           <FounderSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
         )}
 
-        {window.location.pathname === '/services' && (
+        {currentPath === '/services' && (
           <ServicesSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
         )}
 
-        {window.location.pathname.startsWith('/services/') && categoryForSlug(window.location.pathname.split('/').filter(Boolean)[1] || '') && (
+        {currentPath.startsWith('/services/') && categoryForSlug(currentPath.split('/').filter(Boolean)[1] || '') && (
           <ServiceDetailPage
             onOpenStrategyCall={handleOpenStrategyCall}
-            category={categoryForSlug(window.location.pathname.split('/').filter(Boolean)[1] || '')!}
+            category={categoryForSlug(currentPath.split('/').filter(Boolean)[1] || '')!}
           />
         )}
 
-        {window.location.pathname === '/pricing' && (
+        {currentPath === '/pricing' && (
           <PricingSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
         )}
 
-        {window.location.pathname === '/contact' && (
+        {currentPath === '/contact' && (
           <ContactSEOPage onOpenStrategyCall={handleOpenStrategyCall} />
         )}
 
-        {window.location.pathname === '/about' && (
+        {currentPath === '/about' && (
           <AboutPage
             onOpenStrategyCall={handleOpenStrategyCall}
             onOpenMasterclass={() => setMasterclassModalOpen(true)}
           />
         )}
 
-        {window.location.pathname === '/' && (
+        {currentPath === '/' && (
           <>
             <HeroSection
               onOpenStrategyCall={handleOpenStrategyCall}
@@ -197,7 +204,7 @@ export default function App() {
           </div>
         )}
 
-        {window.location.pathname !== '/pricing' && activeView === 'plans' && (
+        {currentPath !== '/pricing' && activeView === 'plans' && (
           <div className="space-y-12">
             <PlansSection
               onSelectPlan={handleSelectPlan}
@@ -225,14 +232,14 @@ export default function App() {
           </div>
         )}
 
-        {window.location.pathname !== '/about' && activeView === 'about' && (
+        {currentPath !== '/about' && activeView === 'about' && (
           <AboutPage
             onOpenStrategyCall={handleOpenStrategyCall}
             onOpenMasterclass={() => setMasterclassModalOpen(true)}
           />
         )}
 
-        {window.location.pathname !== '/contact' && activeView === 'contact' && (
+        {currentPath !== '/contact' && activeView === 'contact' && (
           <ContactPage onOpenStrategyCall={handleOpenStrategyCall} />
         )}
 
